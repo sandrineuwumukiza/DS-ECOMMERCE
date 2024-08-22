@@ -1,0 +1,602 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Pizza Shop Backend API",
+      "description": "API documentation for Pizza Shop app",
+      "version": "1.0.0"
+    },
+    "host": "localhost:3002",
+    "basePath": "",
+    "schemes": [
+      "http",
+      "https"
+    ],
+    "securityDefinitions": {
+      "BearerAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "Enter JWT token in the format: Bearer <token>"
+      }
+    },
+    "paths": {
+      "/users/registerUser": {
+        "post": {
+          "summary": "Create an account",
+          "description": "Register a new user with role (user or admin)",
+          "tags": [
+            "Buyer Auth"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/definitions/RegisterUserRequest"
+              },
+              "required": true,
+              "description": "User registration details"
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "User created"
+            },
+            "400": {
+              "description": "Bad request - User already exists or missing fields"
+            }
+          }
+        }
+      },
+      "/users/login": {
+        "post": {
+          "summary": "Login into your account",
+          "description": "Authenticate and login an existing user",
+          "tags": [
+            "Buyer Auth"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/definitions/LoginRequest"
+              },
+              "required": true,
+              "description": "User login credentials"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User logged in successfully"
+            },
+            "400": {
+              "description": "Bad request - Invalid credentials"
+            }
+          }
+        }
+      },
+      "/products/addProduct": {
+        "post": {
+          "summary": "Create a new Product",
+          "description": "Add a new product to the database",
+          "tags": [
+            "Product"
+          ],
+          "consumes": [
+            "multipart/form-data"
+          ],
+          "parameters": [
+            {
+              "in": "formData",
+              "name": "userId",
+              "type": "string",
+              "required": true,
+              "description": "User ID of the product owner"
+            },
+            {
+              "in": "formData",
+              "name": "productName",
+              "type": "string",
+              "required": true,
+              "description": "Product name"
+            },
+            {
+              "in": "formData",
+              "name": "description",
+              "type": "string",
+              "required": true,
+              "description": "Product description"
+            },
+            {
+              "in": "formData",
+              "name": "image",
+              "type": "file",
+              "description": "Product image"
+            },
+            {
+              "in": "formData",
+              "name": "price",
+              "type": "number",
+              "required": true,
+              "description": "Product price"
+            },
+            {
+              "in": "formData",
+              "name": "category",
+              "type": "string",
+              "enum": ["Air Conditioners","Gadgets", "Home Appliances", "Kitchen Appliances", "Computer", "Refregirator", "Smart Phone"],
+              "required": true,
+              "description": "Product category"
+            }
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Product created successfully"
+            },
+            "400": {
+              "description": "Bad request - Validation error"
+            }
+          }
+        }
+      },
+      "/products/productList": {
+        "get": {
+          "summary": "Get all products",
+          "description": "Retrieve a list of all products",
+          "tags": [
+            "Product"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful retrieval"
+            },
+            "404": {
+              "description": "Products not found"
+            }
+          }
+        }
+      },
+      "/products/productById/{id}": {
+        "get": {
+          "summary": "Get product by ID",
+          "description": "Retrieve a product by its ID",
+          "tags": [
+            "Product"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "ID of the product to retrieve"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful retrieval"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      },
+      "/products/category/{category}": {
+        "get": {
+          "summary": "Get product by category",
+          "description": "Retrieve a product by its category",
+          "tags": [
+            "Product"
+          ],
+          "parameters": [
+            {
+              "name": "category",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "Category of the product to retrieve"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful retrieval"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      },
+      "/products/updateProduct/{id}": {
+        "put": {
+          "summary": "Update product by ID",
+          "description": "Update an existing product by its ID",
+          "tags": [
+            "Product"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "ID of the product to update"
+            },
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/definitions/Product"
+              },
+              "required": true,
+              "description": "Updated product details"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product updated successfully"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      },
+      "/products/deleteProduct/{id}": {
+        "delete": {
+          "summary": "Delete product by ID",
+          "description": "Delete an existing product by its ID",
+          "tags": [
+            "Product"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "ID of the product to delete"
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Product deleted successfully"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      },
+      "/cart/addToCart": {
+        "post": {
+          "summary": "Add product to cart",
+          "description": "Add a product to the user's cart",
+          "tags": [
+            "Cart"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/definitions/AddToCartRequest"
+              },
+              "required": true,
+              "description": "Product details to add to cart"
+            }
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product added to cart successfully"
+            },
+            "400": {
+              "description": "Bad request - Invalid product data"
+            }
+          }
+        }
+      },
+      "/cart/removeFromCart/{id}": {
+        "delete": {
+          "summary": "Remove product from cart",
+          "description": "Remove a product from the user's cart by product ID",
+          "tags": [
+            "Cart"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "ID of the product to remove from cart"
+            }
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Product removed from cart successfully"
+            },
+            "404": {
+              "description": "Product not found in cart"
+            }
+          }
+        }
+      },
+      "/cart/viewCart": {
+        "get": {
+          "summary": "View cart",
+          "description": "Retrieve the user's current cart contents",
+          "tags": [
+            "Cart"
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful retrieval of cart contents"
+            },
+            "404": {
+              "description": "Cart not found"
+            }
+          }
+        }
+      },
+      "/cart/checkout": {
+        "post": {
+          "summary": "Checkout",
+          "description": "Complete the purchase and clear the cart",
+          "tags": [
+            "Cart"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/definitions/CheckoutRequest"
+              },
+              "required": true,
+              "description": "Checkout details"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Checkout successful"
+            },
+            "400": {
+              "description": "Bad request - Invalid checkout details"
+            }
+          }
+        }
+      },
+      "/users/profile": {
+        "get": {
+          "summary": "Get user profile",
+          "description": "Retrieve the profile of the currently authenticated user",
+          "tags": [
+            "User"
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful retrieval of user profile"
+            },
+            "401": {
+              "description": "Unauthorized - User not authenticated"
+            }
+          }
+        }
+      },
+      "/users/profile/update": {
+        "put": {
+          "summary": "Update user profile",
+          "description": "Update the profile information of the currently authenticated user",
+          "tags": [
+            "User"
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/definitions/UserProfileUpdateRequest"
+              },
+              "required": true,
+              "description": "Updated profile information"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Profile updated successfully"
+            },
+            "400": {
+              "description": "Bad request - Invalid profile data"
+            },
+            "401": {
+              "description": "Unauthorized - User not authenticated"
+            }
+          }
+        }
+      },
+      "/users/profile/${id}": {
+        "delete": {
+          "summary": "Delete user profile",
+          "description": "Delete the profile of the currently authenticated user",
+          "tags": [
+            "User"
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Profile deleted successfully"
+            },
+            "401": {
+              "description": "Unauthorized - User not authenticated"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "RegisterUserRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password",
+          "role"
+        ]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "Food",
+              "Fruits",
+              "Alcohol",
+              "Soft drinks and Juice",
+              "Coffee",
+              "Wine"
+            ]
+          }
+        },
+        "required": [
+          "userId",
+          "productName",
+          "description",
+          "price",
+          "category"
+        ]
+      },
+      "AddToCartRequest": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "CheckoutRequest": {
+        "type": "object",
+        "properties": {
+          "paymentMethod": {
+            "type": "string",
+            "enum": [
+              "credit_card",
+              "paypal",
+              "mobilemoney"
+            ]
+          },
+          "shippingAddress": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "paymentMethod",
+          "shippingAddress"
+        ]
+      },
+      "UserProfileUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+  
