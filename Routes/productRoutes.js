@@ -7,12 +7,12 @@ const productRouter = express.Router();
 
 
 
-productRouter.post('/addProduct',Auth, upload.single('image'), addProduct);
-productRouter.get('/productList', getAllProducts);
+productRouter.post('products/addProduct',Auth, upload.single('image'), addProduct);
+productRouter.get('products/productList', getAllProducts);
 productRouter.put('/updateProduct/:id', updateProductById);
 // productRouter.get('/productById/:id', getProductById)
 productRouter.delete('/delete/:id', deleteProductById);
-productRouter.get('/category/:category', getProductsByCategory);
+productRouter.get('products/category/:category', getProductsByCategory);
 // productRouter.get('/productCount', countProduct);
 
 export default productRouter;
