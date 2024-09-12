@@ -99,6 +99,21 @@ export const updateProductById = async (req, res) => {
   }
 };
 
+export const getProductById = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
 export const getProductsByCategory = async (req, res) => {
   try {
     const category = req.params.category;
