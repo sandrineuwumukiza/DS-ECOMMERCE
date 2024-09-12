@@ -5,7 +5,7 @@ import session from 'express-session';
 import cors from "cors";
 import bodyParser from 'body-parser'
 import connectDB from './Db/db.js';
-import router from './routes/index.js';
+import router from './Routes/index.js';
 import swaggerUi from 'swagger-ui-express';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';

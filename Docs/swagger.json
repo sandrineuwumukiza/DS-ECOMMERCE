@@ -77,74 +77,115 @@
         }
       },
       "/products/addProduct": {
-        "post": {
-          "summary": "Create a new Product",
-          "description": "Add a new product to the database",
-          "tags": [
-            "Product"
-          ],
-          "consumes": [
-            "multipart/form-data"
-          ],
-          "parameters": [
-            {
-              "in": "formData",
-              "name": "userId",
-              "type": "string",
-              "required": true,
-              "description": "User ID of the product owner"
-            },
-            {
-              "in": "formData",
-              "name": "productName",
-              "type": "string",
-              "required": true,
-              "description": "Product name"
-            },
-            {
-              "in": "formData",
-              "name": "description",
-              "type": "string",
-              "required": true,
-              "description": "Product description"
-            },
-            {
-              "in": "formData",
-              "name": "image",
-              "type": "file",
-              "description": "Product image"
-            },
-            {
-              "in": "formData",
-              "name": "price",
-              "type": "number",
-              "required": true,
-              "description": "Product price"
-            },
-            {
-              "in": "formData",
-              "name": "category",
-              "type": "string",
-              "enum": ["Air Conditioners","Gadgets", "Home Appliances", "Kitchen Appliances", "Computer", "Refregirator", "Smart Phone"],
-              "required": true,
-              "description": "Product category"
-            }
-          ],
-          "security": [
-            {
-              "BearerAuth": []
-            }
-          ],
-          "responses": {
-            "201": {
-              "description": "Product created successfully"
-            },
-            "400": {
-              "description": "Bad request - Validation error"
-            }
-          }
-        }
+  "post": {
+    "summary": "Create a new Product",
+    "description": "Add a new product to the database",
+    "tags": [
+      "Product"
+    ],
+    "consumes": [
+      "multipart/form-data"
+    ],
+    "parameters": [
+      {
+        "in": "formData",
+        "name": "user",
+        "type": "string",
+        "required": true,
+        "description": "User ID of the product owner"
       },
+      {
+        "in": "formData",
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Product name"
+      },
+      {
+        "in": "formData",
+        "name": "description",
+        "type": "string",
+        "required": true,
+        "description": "Product description"
+      },
+      {
+        "in": "formData",
+        "name": "price",
+        "type": "number",
+        "required": true,
+        "description": "Product price"
+      },
+      {
+        "in": "formData",
+        "name": "discountPrice",
+        "type": "number",
+        "description": "Discounted price of the product (must be less than regular price)"
+      },
+      {
+        "in": "formData",
+        "name": "sale",
+        "type": "boolean",
+        "description": "Indicates if the product is on sale"
+      },
+      {
+        "in": "formData",
+        "name": "category",
+        "type": "string",
+        "enum": ["Air Conditioners", "Gadgets", "Home Appliances", "Kitchen Appliances", "Computer", "Refrigerator", "Smart Phone"],
+        "required": true,
+        "description": "Product category"
+      },
+      {
+        "in": "formData",
+        "name": "stock",
+        "type": "number",
+        "required": true,
+        "description": "Number of items in stock"
+      },
+      {
+        "in": "formData",
+        "name": "features",
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of product features"
+      },
+      {
+        "in": "formData",
+        "name": "images",
+        "type": "array",
+        "items": {
+          "type": "file"
+        },
+        "description": "Array of product images"
+      },
+      {
+        "in": "formData",
+        "name": "imageTypes",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["default", "hover", "gallery"]
+        },
+        "description": "Array of image types corresponding to the images"
+      }
+    ],
+    "security": [
+      {
+        "BearerAuth": []
+      }
+    ],
+    "responses": {
+      "201": {
+        "description": "Product created successfully"
+      },
+      "400": {
+        "description": "Bad request - Validation error"
+      }
+    }
+  }
+},
       "/products/productList": {
         "get": {
           "summary": "Get all products",
