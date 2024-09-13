@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-      "title": "Pizza Shop Backend API",
+      "title": "GIRAICT End Point API",
       "description": "API documentation for Pizza Shop app",
       "version": "1.0.0"
     },
@@ -19,6 +19,16 @@
         "description": "Enter JWT token in the format: Bearer <token>"
       }
     },
+    "tags": [
+      {
+        "name": "User Operations",
+        "description": "Operations for regular users"
+      },
+      {
+        "name": "Admin Operations",
+        "description": "Operations that can only be performed by admin users"
+      }
+    ],
     "paths": {
       "/users/registerUser": {
         "post": {
@@ -76,116 +86,242 @@
           }
         }
       },
-      "/products/addProduct": {
-  "post": {
-    "summary": "Create a new Product",
-    "description": "Add a new product to the database",
+      "/users/verifyemail/{token}": {
+      "get": {
+        "summary": "Verify email",
+        "description": "Verify a user’s email address using a verification token",
+        "tags": [
+          "Buyer Auth"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "type": "string",
+            "description": "Email verification token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verified successfully"
+          },
+          "400": {
+            "description": "Invalid or expired token"
+          }
+        }
+      }
+    },
+      "/users/forgotpassword": {
+      "post": {
+        "summary": "Forgot password",
+        "description": "Send a password reset email",
+        "tags": [
+          "Buyer Auth"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ForgotPasswordRequest"
+            },
+            "required": true,
+            "description": "User’s email address to send the reset link"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password reset email sent"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+      "/users/resetpassword/{token}": {
+      "put": {
+        "summary": "Reset password",
+        "description": "Reset user password using a reset token",
+        "tags": [
+          "Buyer Auth"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "type": "string",
+            "description": "Password reset token"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ResetPasswordRequest"
+            },
+            "required": true,
+            "description": "New password details"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password reset successful"
+          },
+          "400": {
+            "description": "Invalid or expired token"
+          }
+        }
+      }
+      },
+      "/users/delete/{id}": {
+  "delete": {
+    "summary": "Delete a user by ID",
+    "description": "Deletes a user from the database based on the provided user ID. This action can only be performed by an admin.",
     "tags": [
-      "Product"
-    ],
-    "consumes": [
-      "multipart/form-data"
+      "Buyer Auth"
     ],
     "parameters": [
       {
-        "in": "formData",
-        "name": "user",
-        "type": "string",
+        "name": "id",
+        "in": "path",
         "required": true,
-        "description": "User ID of the product owner"
-      },
-      {
-        "in": "formData",
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Product name"
-      },
-      {
-        "in": "formData",
-        "name": "description",
-        "type": "string",
-        "required": true,
-        "description": "Product description"
-      },
-      {
-        "in": "formData",
-        "name": "price",
-        "type": "number",
-        "required": true,
-        "description": "Product price"
-      },
-      {
-        "in": "formData",
-        "name": "discountPrice",
-        "type": "number",
-        "description": "Discounted price of the product (must be less than regular price)"
-      },
-      {
-        "in": "formData",
-        "name": "sale",
-        "type": "boolean",
-        "description": "Indicates if the product is on sale"
-      },
-      {
-        "in": "formData",
-        "name": "category",
-        "type": "string",
-        "enum": ["Air Conditioners", "Gadgets", "Home Appliances", "Kitchen Appliances", "Computer", "Refrigerator", "Smart Phone"],
-        "required": true,
-        "description": "Product category"
-      },
-      {
-        "in": "formData",
-        "name": "stock",
-        "type": "number",
-        "required": true,
-        "description": "Number of items in stock"
-      },
-      {
-        "in": "formData",
-        "name": "features",
-        "type": "array",
-        "items": {
+        "description": "ID of the user to delete",
+        "schema": {
           "type": "string"
-        },
-        "description": "List of product features"
-      },
-      {
-        "in": "formData",
-        "name": "images",
-        "type": "array",
-        "items": {
-          "type": "file"
-        },
-        "description": "Array of product images"
-      },
-      {
-        "in": "formData",
-        "name": "imageTypes",
-        "type": "array",
-        "items": {
-          "type": "string",
-          "enum": ["default", "hover", "gallery"]
-        },
-        "description": "Array of image types corresponding to the images"
+        }
       }
     ],
+    "responses": {
+      "200": {
+        "description": "User deleted successfully"
+      },
+      "404": {
+        "description": "User not found"
+      },
+      "500": {
+        "description": "Server error"
+      }
+    },
     "security": [
       {
         "BearerAuth": []
       }
-    ],
-    "responses": {
-      "201": {
-        "description": "Product created successfully"
-      },
-      "400": {
-        "description": "Bad request - Validation error"
-      }
-    }
+    ]
   }
 },
+   
+      "/products/addProduct": {
+        "post": {
+          "summary": "Create a new Product",
+          "description": "Add a new product to the database",
+          "tags": [
+            "Product"
+          ],
+          "consumes": [
+            "multipart/form-data"
+          ],
+          "parameters": [
+            {
+              "in": "formData",
+              "name": "user",
+              "type": "string",
+              "required": true,
+              "description": "User ID of the product owner"
+            },
+            {
+              "in": "formData",
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "description": "Product name"
+            },
+            {
+              "in": "formData",
+              "name": "description",
+              "type": "string",
+              "required": true,
+              "description": "Product description"
+            },
+            {
+              "in": "formData",
+              "name": "price",
+              "type": "number",
+              "required": true,
+              "description": "Product price"
+            },
+            {
+              "in": "formData",
+              "name": "discountPrice",
+              "type": "number",
+              "description": "Discounted price of the product (must be less than regular price)"
+            },
+            {
+              "in": "formData",
+              "name": "sale",
+              "type": "boolean",
+              "description": "Indicates if the product is on sale"
+            },
+            {
+              "in": "formData",
+              "name": "category",
+              "type": "string",
+              "enum": ["Air Conditioners", "Gadgets", "Home Appliances", "Kitchen Appliances", "Computer", "Refrigerator", "Smart Phone"],
+              "required": true,
+              "description": "Product category"
+            },
+            {
+              "in": "formData",
+              "name": "stock",
+              "type": "number",
+              "required": true,
+              "description": "Number of items in stock"
+            },
+            {
+              "in": "formData",
+              "name": "features",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of product features"
+            },
+            {
+              "in": "formData",
+              "name": "images",
+              "type": "array",
+              "items": {
+                "type": "file"
+              },
+              "description": "Array of product images"
+            },
+            {
+              "in": "formData",
+              "name": "imageTypes",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["default", "hover", "gallery"]
+              },
+              "description": "Array of image types corresponding to the images"
+            }
+          ],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Product created successfully"
+            },
+            "400": {
+              "description": "Bad request - Validation error"
+            }
+          }
+        }
+      },
       "/products/productList": {
         "get": {
           "summary": "Get all products",
@@ -255,41 +391,122 @@
           }
         }
       },
-      "/products/updateProduct/{id}": {
-        "put": {
-          "summary": "Update product by ID",
-          "description": "Update an existing product by its ID",
-          "tags": [
-            "Product"
-          ],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "string",
-              "description": "ID of the product to update"
-            },
-            {
-              "in": "body",
-              "name": "body",
-              "schema": {
-                "$ref": "#/definitions/Product"
-              },
-              "required": true,
-              "description": "Updated product details"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Product updated successfully"
-            },
-            "404": {
-              "description": "Product not found"
-            }
-          }
-        }
+     "/products/updateProduct/{id}": {
+  "put": {
+    "summary": "Update a product by ID",
+    "description": "Update an existing product in the database by its ID, including images",
+    "tags": [
+      "Product"
+    ],
+    "consumes": [
+      "multipart/form-data"
+    ],
+    "parameters": [
+      {
+        "in": "path",
+        "name": "id",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "ID of the product to update"
       },
+      {
+        "in": "formData",
+        "name": "user",
+        "type": "string",
+        "description": "User ID of the product owner"
+      },
+      {
+        "in": "formData",
+        "name": "name",
+        "type": "string",
+        "description": "Product name"
+      },
+      {
+        "in": "formData",
+        "name": "description",
+        "type": "string",
+        "description": "Product description"
+      },
+      {
+        "in": "formData",
+        "name": "price",
+        "type": "number",
+        "description": "Product price"
+      },
+      {
+        "in": "formData",
+        "name": "discountPrice",
+        "type": "number",
+        "description": "Discounted price of the product (must be less than regular price)"
+      },
+      {
+        "in": "formData",
+        "name": "sale",
+        "type": "boolean",
+        "description": "Indicates if the product is on sale"
+      },
+      {
+        "in": "formData",
+        "name": "category",
+        "type": "string",
+        "enum": ["Air Conditioners", "Gadgets", "Home Appliances", "Kitchen Appliances", "Computer", "Refrigerator", "Smart Phone"],
+        "description": "Product category"
+      },
+      {
+        "in": "formData",
+        "name": "stock",
+        "type": "number",
+        "description": "Number of items in stock"
+      },
+      {
+        "in": "formData",
+        "name": "features",
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of product features"
+      },
+      {
+        "in": "formData",
+        "name": "images",
+        "type": "array",
+        "items": {
+          "type": "file"
+        },
+        "description": "Array of product images"
+      },
+      {
+        "in": "formData",
+        "name": "imageTypes",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["default", "hover", "gallery"]
+        },
+        "description": "Array of image types corresponding to the images"
+      }
+    ],
+    "security": [
+      {
+        "BearerAuth": []
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Product updated successfully"
+      },
+      "400": {
+        "description": "Bad request - Validation error"
+      },
+      "404": {
+        "description": "Product not found"
+      }
+    }
+  }
+},
       "/products/deleteProduct/{id}": {
         "delete": {
           "summary": "Delete product by ID",
@@ -515,25 +732,29 @@
       "RegisterUserRequest": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string",
-            "enum": [
-              "user",
-              "admin"
-            ]
-          }
+          "username": {
+          "type": "string",
+          "description": "The username of the user"
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user"
+        },
+        "password": {
+          "type": "string",
+          "description": "The password for the user account"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "user",
+            "admin"
+          ],
+          "description": "The role of the user"
+        }
         },
         "required": [
-          "name",
+          "username",
           "email",
           "password",
           "role"
@@ -554,6 +775,30 @@
           "password"
         ]
       },
+      "ForgotPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "The email address of the user requesting a password reset"
+        }
+      },
+      "required": [
+        "email"
+      ]
+    },
+    "ResetPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string",
+          "description": "The new password for the user account"
+        }
+      },
+      "required": [
+        "password"
+      ]
+    },
       "Product": {
         "type": "object",
         "properties": {
