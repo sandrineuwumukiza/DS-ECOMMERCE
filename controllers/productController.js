@@ -69,19 +69,37 @@ export const getAllProducts = async (req, res) => {
 export const updateProductById = async (req, res) => {
   try {
     const productId = req.params.id;
-    const updateData = req.body;
+    const { files } = req;
+    const {
+      name,
+      description,
+      price,
+      discountPrice,
+      sale,
+      category,
+      stock,
+      features,
+      imageTypes
+    } = req.body;
 
-    // If images are being updated
-    if (req.files) {
-      const images = req.files;
-      const imageTypes = req.body.imageTypes;
+    const updateData = {};
 
-      // Upload new images
-      const uploadedImages = await uploadImages(images);
+    if (name) updateData.name = name;
+    if (description) updateData.description = description;
+    if (price) updateData.price = price;
+    if (discountPrice) updateData.discountPrice = discountPrice;
+    if (sale !== undefined) updateData.sale = sale;
+    if (category) updateData.category = category;
+    if (stock) updateData.stock = stock;
+    if (features) updateData.features = features;
+
+    // Handle image updates if images are provided
+    if (files && files.images) {
+      const uploadedImages = await uploadImages(files.images);
 
       const imagesData = uploadedImages.map((result, index) => ({
         url: result.secure_url,
-        type: imageTypes[index]
+        type: imageTypes ? imageTypes[index] : 'unknown'
       }));
 
       updateData.images = imagesData;

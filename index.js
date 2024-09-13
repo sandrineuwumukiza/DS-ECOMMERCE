@@ -3,6 +3,7 @@ dotenv.config();
 import express, { Router } from 'express';
 import session from 'express-session';
 import cors from "cors";
+import helmet from "helmet"
 import bodyParser from 'body-parser'
 import connectDB from './Db/db.js';
 import router from './Routes/index.js';
@@ -24,6 +25,7 @@ const corsOptions ={
 
 const app = express();
 app.use(express.json()); 
+app.use(helmet());
 app.use(cors());
 // app.use(express.json());
 app.use(bodyParser.json());
